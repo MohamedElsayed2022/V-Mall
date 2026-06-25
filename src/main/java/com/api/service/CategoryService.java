@@ -4,6 +4,8 @@ import com.api.model.Category;
 import com.api.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,8 +20,9 @@ import java.util.List;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    public List<Category> getCategories() {
-        return categoryRepository.findAll();
+    public List<Category> getCategories(int page , int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        return categoryRepository.findAll(pageable).getContent();
     }
     public Category createCategory(Category category , MultipartFile image) {
         String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();

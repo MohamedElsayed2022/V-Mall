@@ -1,5 +1,6 @@
 package com.api.controller;
 
+import com.api.dto.ShopResponseDTO;
 import com.api.model.Shop;
 import com.api.service.ShopService;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,11 @@ public class ShopController {
     private final ShopService shopService;
 
     @GetMapping(value = "shops")
-    public List<Shop> getShops(@RequestParam int page , @RequestParam int limit) {
+    public List<ShopResponseDTO> getShops(@RequestParam int page , @RequestParam int limit) {
         return shopService.getShops(page , limit);
     }
     @PostMapping(value = "shop", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Shop createShop(@ModelAttribute Shop shop , @RequestParam("imageFiles") List<MultipartFile> imageFiles) {
+    public ShopResponseDTO createShop(@ModelAttribute Shop shop , @RequestParam("imageFiles") List<MultipartFile> imageFiles) {
         return shopService.createShop(shop, imageFiles);
     }
 

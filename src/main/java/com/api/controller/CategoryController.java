@@ -20,8 +20,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @RequestMapping(value = "categories")
-    public List<Category> getCategories() {
-        return categoryService.getCategories();
+    public List<Category> getCategories(@RequestParam int page ,  @RequestParam int limit) {
+        return categoryService.getCategories(page , limit);
     }
 
     @PostMapping(value = "category" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE )

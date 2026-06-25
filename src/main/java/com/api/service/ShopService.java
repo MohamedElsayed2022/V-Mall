@@ -1,5 +1,8 @@
 package com.api.service;
 
+import com.api.dto.CategoryDTO;
+import com.api.dto.OwnerDTO;
+import com.api.dto.ShopResponseDTO;
 import com.api.model.Shop;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +22,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShopService {
     private final ShopRepository shopRepository;
-    public List<Shop> getShops(int page, int limit) {
-        Pageable pageable = PageRequest.of(page, limit);
+    private ShopResponseDTO convertToDto(Shop shop) {
 
-        return shopRepository.findAll(pageable).getContent();
+        ShopResponseDTO dto = new ShopResponseDTO();
+
+        dto.setId(shop.getId());
+        dto.setShopName(shop.getShopName());
+        dto.setDescription(shop.getDescription());
+        dto.setImages(shop.getImages());
+
+        OwnerDTO ownerDTO = new OwnerDTO();
+        ownerDTO.setId(shop.getOwner().getId());
+        ownerDTO.setFirstName(shop.getOwner().getFirstName());
+        ownerDTO.setLastName(shop.getOwner().getLastName());
+        ownerDTO.setEmail(shop.getOwner().getEmail());
+
+        dto.setOwner(ownerDTO);
+
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setId(shop.getCategory().getId());
+        categoryDTO.setName(shop.getCategory().getName());
+        categoryDTO.setLogo(shop.getCategory().getLogo());
+
+        dto.setCategory(categoryDTO);
+
+        return dto;
     }
 
-    public Shop createShop(Shop shop , List<MultipartFile> imageFiles) {
+    public List<ShopResponseDTO> getShops(int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        return shopRepository.findAll(pageable).getContent().stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    public ShopResponseDTO createShop(Shop shop , List<MultipartFile> imageFiles) {
         List<String> fileNames = new ArrayList<>();
         for (MultipartFile img : imageFiles) {
             String fileName = System.currentTimeMillis() + "_" + img.getOriginalFilename();
@@ -39,7 +70,30 @@ public class ShopService {
 
         }
         shop.setImages(fileNames);
-        return shopRepository.save(shop);
+
+        Shop savedShop = shopRepository.save(shop);
+
+        ShopResponseDTO dto = new ShopResponseDTO();
+        dto.setId(savedShop.getId());
+        dto.setShopName(savedShop.getShopName());
+        dto.setDescription(savedShop.getDescription());
+        dto.setImages(savedShop.getImages());
+
+        OwnerDTO ownerDTO = new OwnerDTO();
+        ownerDTO.setId(savedShop.getOwner().getId());
+        ownerDTO.setFirstName(savedShop.getOwner().getFirstName());
+        ownerDTO.setLastName(savedShop.getOwner().getLastName());
+        ownerDTO.setEmail(savedShop.getOwner().getEmail());
+        dto.setOwner(ownerDTO);
+
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setId(savedShop.getCategory().getId());
+        categoryDTO.setName(savedShop.getCategory().getName());
+        categoryDTO.setLogo(savedShop.getCategory().getLogo());
+        dto.setCategory(categoryDTO);
+
+        return dto;
+
     }
 
     public Shop updateShop( Long id ,  Shop newShop , List<MultipartFile> imageFiles) {

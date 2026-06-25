@@ -3,7 +3,6 @@ package com.api.dto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Getter
 @Setter
