@@ -1,0 +1,37 @@
+package com.api.model;
+
+import com.api.base.AuditableEntity;
+import com.fasterxml.jackson.annotation.JsonView;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "shops")
+public class Shop extends AuditableEntity {
+    @Column(name = "name")
+    private String shopName;
+    @Column(name = "description")
+    private String description;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "shop_images",
+            joinColumns = @JoinColumn(name = "shop_id")
+    )
+    @Column(name = "image")
+    private List<String> images;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id" , nullable = false)
+    private Category category;
+}
