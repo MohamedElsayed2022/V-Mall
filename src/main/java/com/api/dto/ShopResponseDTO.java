@@ -1,6 +1,7 @@
 package com.api.dto;
 
 import com.api.base.AuditableEntity;
+import com.api.model.Contract;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,5 +17,7 @@ public class ShopResponseDTO extends AuditableEntity {
     private List<String> images;
     private OwnerDTO owner;
     private CategoryDTO category;
+    private ContractDTO contract;
+ //   private Contract contract;
 
 }

@@ -1,8 +1,10 @@
 package com.api.service;
 
 import com.api.dto.CategoryDTO;
+import com.api.dto.ContractDTO;
 import com.api.dto.OwnerDTO;
 import com.api.dto.ShopResponseDTO;
+import com.api.model.Contract;
 import com.api.model.Shop;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,22 @@ public class ShopService {
         categoryDTO.setLogo(shop.getCategory().getLogo());
 
         dto.setCategory(categoryDTO);
+
+        if (shop.getContracts() != null && !shop.getContracts().isEmpty()) {
+
+            Contract latestContract = shop.getContracts().get(shop.getContracts().size() - 1);
+
+            ContractDTO contractDTO = new ContractDTO();
+            contractDTO.setId(latestContract.getId());
+            contractDTO.setContractNumber(latestContract.getContractNumber());
+            contractDTO.setStatus(latestContract.getStatus());
+            contractDTO.setStartDate(latestContract.getStartDate());
+            contractDTO.setEndDate(latestContract.getEndDate());
+
+            dto.setContract(contractDTO);
+        }
+
+
 
         return dto;
     }

@@ -34,4 +34,7 @@ public class Shop extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id" , nullable = false)
     private Category category;
+
+    @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Contract> contracts;
 }
