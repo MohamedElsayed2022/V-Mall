@@ -19,7 +19,7 @@ public class ContractController {
         return contractService.createContract(contract);
     }
     @GetMapping("contracts")
-    public List<Contract> getALlContracts() {
+    public List<ContractDTO> getALlContracts() {
         return contractService.getAllContracts();
     }
 }

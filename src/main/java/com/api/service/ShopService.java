@@ -1,9 +1,6 @@
 package com.api.service;
 
-import com.api.dto.CategoryDTO;
-import com.api.dto.ContractDTO;
-import com.api.dto.OwnerDTO;
-import com.api.dto.ShopResponseDTO;
+import com.api.dto.*;
 import com.api.model.Contract;
 import com.api.model.Shop;
 import com.api.repository.ShopRepository;

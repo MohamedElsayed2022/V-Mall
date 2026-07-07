@@ -1,5 +1,6 @@
 package com.api.dto;
 
+import com.api.model.Shop;
 import enums.ContractStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,4 +15,8 @@ public class ContractDTO {
     private ContractStatus status;
     private LocalDate startDate;
     private LocalDate endDate;
+    private ShopMinDTO shop;
+//    private ShopResponseDTO shop;
+
+
 }
