@@ -18,9 +18,7 @@ public class ContractService {
     public Contract createContract(Contract contract) {
         return contractRepository.save(contract);
     }
-  //  public List<Contract> getAllContracts() {
-  //      return contractRepository.findAll();
-  //  }
+
   public List<ContractDTO> getAllContracts() {
       List<Contract> contracts = contractRepository.findAll();
 
@@ -37,17 +35,12 @@ public class ContractService {
               shopMinDTO.setId(contract.getShop().getId());
               shopMinDTO.setShopName(contract.getShop().getShopName());
               shopMinDTO.setDescription(contract.getShop().getDescription());
+              shopMinDTO.setImages(contract.getShop().getImages());
+              shopMinDTO.setOwnerEmail(contract.getShop().getOwner().getEmail());
               dto.setShop(shopMinDTO);
           }
           return dto;
       }).collect(Collectors.toList());
   }
-  //  public List<ContractDTO> getAllContracts() {
-    //    List<Contract> contracts = contractRepository.findAll();
-    //    return contracts.stream().map(contract -> {
-    //        ContractDTO dto = new ContractDTO();
-    //        dto.setId(contract.getId());
-     //       return dto;
-     //   }).collect(Collectors.toList());
-    //}
+
 }
