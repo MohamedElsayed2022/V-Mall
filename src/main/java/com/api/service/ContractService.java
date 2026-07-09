@@ -29,6 +29,8 @@ public class ContractService {
           dto.setStatus(contract.getStatus());
           dto.setStartDate(contract.getStartDate());
           dto.setEndDate(contract.getEndDate());
+          dto.setAmount(contract.getAmount());
+          dto.setContractType(contract.getContractType());
 
           if(contract.getShop() != null){
               ShopMinDTO shopMinDTO = new ShopMinDTO();
