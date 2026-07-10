@@ -2,6 +2,7 @@ package com.api.service;
 
 import com.api.dto.*;
 import com.api.model.Contract;
+import com.api.model.Review;
 import com.api.model.Shop;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,9 @@ public class ShopService {
         dto.setShopName(shop.getShopName());
         dto.setDescription(shop.getDescription());
         dto.setImages(shop.getImages());
+        dto.setCreatedDate(shop.getCreatedDate());
+        dto.setLastModifiedDate(shop.getLastModifiedDate());
+
 
         OwnerDTO ownerDTO = new OwnerDTO();
         ownerDTO.setId(shop.getOwner().getId());
@@ -44,6 +48,24 @@ public class ShopService {
 
         dto.setCategory(categoryDTO);
 
+        if (shop.getReviews() != null && !shop.getReviews().isEmpty()) {
+
+            List<ReviewDTO> reviewsList = shop.getReviews().stream()
+                    .map(review -> {
+                        ReviewDTO reviewDTO = new ReviewDTO();
+                        reviewDTO.setId(review.getId());
+                        reviewDTO.setRating(review.getRating());
+                        reviewDTO.setComment(review.getComment());
+                        return reviewDTO;
+                    })
+                    .toList();
+
+            dto.setReviews(reviewsList);
+        }
+
+
+
+
         if (shop.getContracts() != null && !shop.getContracts().isEmpty()) {
 
             Contract latestContract = shop.getContracts().get(shop.getContracts().size() - 1);
@@ -54,9 +76,12 @@ public class ShopService {
             contractDTO.setStatus(latestContract.getStatus());
             contractDTO.setStartDate(latestContract.getStartDate());
             contractDTO.setEndDate(latestContract.getEndDate());
+            contractDTO.setAmount(latestContract.getAmount());
+            contractDTO.setContractType(latestContract.getContractType());
 
             dto.setContract(contractDTO);
         }
+
 
 
 
