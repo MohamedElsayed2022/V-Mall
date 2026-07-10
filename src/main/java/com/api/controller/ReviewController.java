@@ -15,23 +15,12 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-
     @RequestMapping("reviews")
-    public List<Review> getAllReviews() {
+    public List<Review> getAllReviews(){
         return reviewService.getAllReviews();
     }
-
     @PostMapping("review")
-    public Review createReview(@RequestBody Review review) {
-
-        System.out.println("Rating = " + review.getRating());
-        System.out.println("Comment = " + review.getComment());
-        System.out.println("Shop = " + review.getShop());
-
-        if (review.getShop() != null) {
-            System.out.println("Shop Id = " + review.getShop().getId());
-        }
-
+    public Review createReview(@RequestBody Review review){
         return reviewService.createReview(review);
     }
 }
