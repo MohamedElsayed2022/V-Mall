@@ -37,4 +37,7 @@ public class Shop extends AuditableEntity {
 
     @OneToMany(mappedBy = "shop", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Contract> contracts;
+
+    @OneToMany(mappedBy = "shop" ,  cascade = CascadeType.ALL ,  fetch = FetchType.LAZY)
+    private List<Review> reviews;
 }
