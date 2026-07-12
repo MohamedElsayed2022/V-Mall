@@ -82,9 +82,6 @@ public class ShopService {
             dto.setContract(contractDTO);
         }
 
-
-
-
         return dto;
     }
 
