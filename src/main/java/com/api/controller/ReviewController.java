@@ -1,5 +1,6 @@
 package com.api.controller;
 
+import com.api.dto.ReviewDTO;
 import com.api.model.Review;
 import com.api.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     @RequestMapping("reviews")
-    public List<Review> getAllReviews(){
+    public List<ReviewDTO> getAllReviews(){
         return reviewService.getAllReviews();
     }
     @PostMapping("review")
