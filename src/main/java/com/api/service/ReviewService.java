@@ -31,7 +31,7 @@ public class ReviewService {
                 shopMinDTO.setImages(review.getShop().getImages());
                 shopMinDTO.setOwnerEmail(review.getShop().getOwner().getEmail());
 
-                reviewDTO.setShopMinDTO(shopMinDTO);
+                reviewDTO.setShop(shopMinDTO);
             }
             return reviewDTO;
         }).collect(Collectors.toList());

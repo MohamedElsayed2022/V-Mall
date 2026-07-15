@@ -12,5 +12,5 @@ import lombok.Setter;
 public class ReviewDTO extends AuditableEntity {
     private Integer rating;
     private String comment;
-    private ShopMinDTO shopMinDTO;
+    private ShopMinDTO shop;
 }
