@@ -19,6 +19,19 @@ public class Shop extends AuditableEntity {
     private String shopName;
     @Column(name = "description")
     private String description;
+
+    @Column(name = "area")
+    private String area;
+
+    @Column(name = "rent_price")
+    private Double rentPrice;
+
+    @Column(name = "average_rating")
+    private Double averageRating;
+
+    @Column(name = "total_reviews")
+    private Integer totalReviews;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "shop_images",

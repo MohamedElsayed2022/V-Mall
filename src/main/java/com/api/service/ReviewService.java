@@ -30,7 +30,6 @@ public class ReviewService {
                 shopMinDTO.setShopName(review.getShop().getShopName());
                 shopMinDTO.setImages(review.getShop().getImages());
                 shopMinDTO.setOwnerEmail(review.getShop().getOwner().getEmail());
-
                 reviewDTO.setShop(shopMinDTO);
             }
             return reviewDTO;
