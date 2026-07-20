@@ -8,6 +8,7 @@ import com.api.repository.ReviewRepository;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 public class ShopService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
+
     private ShopResponseDTO convertToDto(Shop shop) {
 
         ShopResponseDTO dto = new ShopResponseDTO();
@@ -110,13 +112,15 @@ public class ShopService {
         shop.setImages(fileNames);
 
         Shop savedShop = shopRepository.save(shop);
-        int reviewsCount = (int) reviewRepository.countByShopId(savedShop.getId());
+//        int reviewsCount = (int) reviewRepository.countByShopId(savedShop.getId());
         ShopResponseDTO dto = new ShopResponseDTO();
         dto.setId(savedShop.getId());
         dto.setShopName(savedShop.getShopName());
         dto.setDescription(savedShop.getDescription());
         dto.setImages(savedShop.getImages());
-        dto.setTotalReviews(reviewsCount);
+       // dto.setTotalReviews(reviewsCount);
+        dto.setArea(shop.getArea());
+        dto.setRentPrice(shop.getRentPrice());
 
         OwnerDTO ownerDTO = new OwnerDTO();
         ownerDTO.setId(savedShop.getOwner().getId());
