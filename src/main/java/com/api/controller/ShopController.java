@@ -31,4 +31,9 @@ public class ShopController {
     public Shop updateShop( @PathVariable long id ,@ModelAttribute Shop shop, @RequestParam("imageFiles") List<MultipartFile> imageFiles) {
         return shopService.updateShop(id, shop, imageFiles);
     }
+    @DeleteMapping(value = "shop/{id}")
+    public String deleteShop(@PathVariable long id ){
+        return shopService.deleteShop(id);
+    }
+
 }

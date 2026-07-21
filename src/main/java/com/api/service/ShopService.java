@@ -163,4 +163,9 @@ public class ShopService {
 
     }
 
+    public String deleteShop(Long id){
+        shopRepository.deleteById(id);
+        return "Shop Deleted Successfully with id: " + id;
+    }
+
     }
