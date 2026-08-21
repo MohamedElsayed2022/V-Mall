@@ -20,7 +20,7 @@ public class ProductDTO {
     private String sku;
     private ShopMinDTO shop;
 //    private Long shopId;
-    private Long categoryId;
+ //   private Long categoryId;
     private List<String> images;
     private Boolean active;
     private CategoryDTO category;

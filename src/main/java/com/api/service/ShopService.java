@@ -2,13 +2,10 @@ package com.api.service;
 
 import com.api.dto.*;
 import com.api.model.Contract;
-import com.api.model.Review;
 import com.api.model.Shop;
-import com.api.repository.ReviewRepository;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
@@ -18,14 +15,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ShopService {
     private final ShopRepository shopRepository;
-    private final ReviewRepository reviewRepository;
 
+    private ContractDTO mapToContractDto(List<Contract> contracts) {
+        if (contracts == null || contracts.isEmpty()) {
+            return null;
+        }
+
+        // جلب أحدث عقد (آخر عنصر في القائمة)
+        Contract latestContract = contracts.get(contracts.size() - 1);
+
+        ContractDTO contractDTO = new ContractDTO();
+        contractDTO.setId(latestContract.getId());
+        contractDTO.setContractNumber(latestContract.getContractNumber());
+        contractDTO.setStatus(latestContract.getStatus());
+        contractDTO.setStartDate(latestContract.getStartDate());
+        contractDTO.setEndDate(latestContract.getEndDate());
+        contractDTO.setAmount(latestContract.getAmount());
+        contractDTO.setContractType(latestContract.getContractType());
+
+        return contractDTO;
+    }
     private ShopResponseDTO convertToDto(Shop shop) {
 
         ShopResponseDTO dto = new ShopResponseDTO();
@@ -68,27 +82,9 @@ public class ShopService {
             dto.setReviews(reviewsList);
         }
 
-
-
-
-        if (shop.getContracts() != null && !shop.getContracts().isEmpty()) {
-
-            Contract latestContract = shop.getContracts().get(shop.getContracts().size() - 1);
-
-            ContractDTO contractDTO = new ContractDTO();
-            contractDTO.setId(latestContract.getId());
-            contractDTO.setContractNumber(latestContract.getContractNumber());
-            contractDTO.setStatus(latestContract.getStatus());
-            contractDTO.setStartDate(latestContract.getStartDate());
-            contractDTO.setEndDate(latestContract.getEndDate());
-            contractDTO.setAmount(latestContract.getAmount());
-            contractDTO.setContractType(latestContract.getContractType());
-
-            dto.setContract(contractDTO);
-        }
-
+        dto.setContract(mapToContractDto(shop.getContracts()));
         if ((shop.getProducts() != null && !shop.getProducts().isEmpty())) {
-            List<ProductMinDTO> productMinDTOs = new ArrayList<>();
+            List<ProductMinDTO> productMinDTOs;
             productMinDTOs = shop.getProducts().stream().map(product -> {
                 ProductMinDTO  productMinDTO = new ProductMinDTO();
                 productMinDTO.setId(product.getId());
@@ -129,7 +125,6 @@ public class ShopService {
         shop.setImages(fileNames);
 
         Shop savedShop = shopRepository.save(shop);
-//        int reviewsCount = (int) reviewRepository.countByShopId(savedShop.getId());
         ShopResponseDTO dto = new ShopResponseDTO();
         dto.setId(savedShop.getId());
         dto.setShopName(savedShop.getShopName());
@@ -161,7 +156,7 @@ public class ShopService {
         oldShop.setDescription(newShop.getDescription());
         oldShop.setImages(newShop.getImages());
         oldShop.setShopName(newShop.getShopName());
-        if(imageFiles != null && imageFiles.isEmpty())  {
+        if(imageFiles != null && !imageFiles.isEmpty())  {
             List<String> fileNames = new ArrayList<>();
             for (MultipartFile img : imageFiles) {
                 String fileName = System.currentTimeMillis() + "_" + img.getOriginalFilename();

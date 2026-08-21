@@ -1,5 +1,6 @@
 package com.api.service;
 
+import com.api.dto.CategoryDTO;
 import com.api.dto.ProductDTO;
 import com.api.model.Category;
 import com.api.model.Product;
@@ -8,7 +9,6 @@ import com.api.repository.CategoryRepository;
 import com.api.repository.ProductRepository;
 import com.api.repository.ShopRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,13 +38,15 @@ public class ProductService {
             dto.setSku(product.getSku());
             dto.setActive(product.getActive());
             dto.setImages(product.getImages());
-//            if (product.getShop() != null) {
-//                dto.setShopId(product.getShop().getId());
-//            }
+  /// /////////////////////////////////////////////////////////////
             if (product.getCategory() != null) {
-                dto.setCategoryId(product.getCategory().getId());
-            }
+                CategoryDTO categoryDTO = new CategoryDTO();
+                categoryDTO.setId(product.getCategory().getId());
+                categoryDTO.setName(product.getCategory().getName());
+                categoryDTO.setLogo(product.getCategory().getLogo());
 
+                dto.setCategory(categoryDTO);
+            }
             return dto;
         }).toList();
     }
@@ -85,6 +86,15 @@ public class ProductService {
         dto.setSku(savedProduct.getSku());
         dto.setActive(savedProduct.getActive());
         dto.setImages(savedProduct.getImages());
+
+        if (product.getCategory() != null) {
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(product.getCategory().getId());
+            categoryDTO.setName(product.getCategory().getName());
+            categoryDTO.setLogo(product.getCategory().getLogo());
+
+            dto.setCategory(categoryDTO);
+        }
 
         return dto;
 
