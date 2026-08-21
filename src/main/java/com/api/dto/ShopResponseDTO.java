@@ -24,6 +24,7 @@ public class ShopResponseDTO extends AuditableEntity {
     private Double rentPrice;
     private Double averageRating;
     private Integer totalReviews;
+    private List<ProductMinDTO> products;
 
     //   private Contract contract;
 

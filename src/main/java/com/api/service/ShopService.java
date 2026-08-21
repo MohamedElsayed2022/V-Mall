@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +85,22 @@ public class ShopService {
             contractDTO.setContractType(latestContract.getContractType());
 
             dto.setContract(contractDTO);
+        }
+
+        if ((shop.getProducts() != null && !shop.getProducts().isEmpty())) {
+            List<ProductMinDTO> productMinDTOs = new ArrayList<>();
+            productMinDTOs = shop.getProducts().stream().map(product -> {
+                ProductMinDTO  productMinDTO = new ProductMinDTO();
+                productMinDTO.setId(product.getId());
+                productMinDTO.setName(product.getName());
+                productMinDTO.setDescription(product.getDescription());
+                productMinDTO.setPrice(product.getPrice());
+                productMinDTO.setQuantity(product.getQuantity());
+
+                return productMinDTO;
+            }).toList();
+            dto.setProducts(productMinDTOs);
+
         }
 
         return dto;

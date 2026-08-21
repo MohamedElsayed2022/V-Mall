@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -23,8 +25,13 @@ public class Product extends AuditableEntity {
     private Integer quantity;
     @Column(name = "sku")
     private String sku;
-    @Column(name = "image")
-    private String image;
+    @ElementCollection
+    @CollectionTable(
+            name = "product_images",
+            joinColumns = @JoinColumn(name = "product_id")
+    )
+    @Column(name = "images")
+    private List<String> images;
     @Column(name = "is_active")
     private Boolean active;
 
