@@ -4,10 +4,7 @@ import com.api.dto.ReviewDTO;
 import com.api.model.Review;
 import com.api.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RequiredArgsConstructor
@@ -17,11 +14,11 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     @RequestMapping("reviews")
-    public List<ReviewDTO> getAllReviews(){
-        return reviewService.getAllReviews();
+    public List<ReviewDTO> getAllReviews(@RequestParam Long shopId){
+        return reviewService.getAllReviews(shopId);
     }
     @PostMapping("review")
-    public Review createReview(@RequestBody Review review){
-        return reviewService.createReview(review);
+    public ReviewDTO createReview(@RequestBody Review review ,@RequestParam Long shopId){
+        return reviewService.createReview(review , shopId);
     }
 }

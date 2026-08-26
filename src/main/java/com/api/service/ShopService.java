@@ -116,8 +116,6 @@ public class ShopService {
                         reviewDTO.setRating(review.getRating());
                         reviewDTO.setComment(review.getComment());
 
-//                        reviewDTO.setShop(shop);
-
                         return reviewDTO;
                     })
                     .toList();

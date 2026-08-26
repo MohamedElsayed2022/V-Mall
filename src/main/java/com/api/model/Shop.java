@@ -1,7 +1,6 @@
 package com.api.model;
 
 import com.api.base.AuditableEntity;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 

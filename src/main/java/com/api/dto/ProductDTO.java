@@ -1,6 +1,5 @@
 package com.api.dto;
 
-import com.api.model.Shop;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,8 +18,6 @@ public class ProductDTO {
     private Integer quantity;
     private String sku;
     private ShopMinDTO shop;
-//    private Long shopId;
- //   private Long categoryId;
     private List<String> images;
     private Boolean active;
     private CategoryDTO category;
