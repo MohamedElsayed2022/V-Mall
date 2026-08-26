@@ -3,6 +3,7 @@ package com.api.service;
 import com.api.dto.*;
 import com.api.model.Contract;
 import com.api.model.Shop;
+import com.api.repository.ReviewRepository;
 import com.api.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShopService {
     private final ShopRepository shopRepository;
+    private final ReviewRepository reviewRepository;
 
     private ContractDTO mapToContractDto(List<Contract> contracts) {
         if (contracts == null || contracts.isEmpty()) {
@@ -51,30 +53,71 @@ public class ShopService {
         dto.setCreatedDate(shop.getCreatedDate());
         dto.setLastModifiedDate(shop.getLastModifiedDate());
 
+        // Average Rating
+        Double averageRating =
+                reviewRepository.getAverageRatingByShopId(shop.getId());
 
-        OwnerDTO ownerDTO = new OwnerDTO();
-        ownerDTO.setId(shop.getOwner().getId());
-        ownerDTO.setFirstName(shop.getOwner().getFirstName());
-        ownerDTO.setLastName(shop.getOwner().getLastName());
-        ownerDTO.setEmail(shop.getOwner().getEmail());
+        dto.setAverageRating(
+                averageRating != null ? averageRating : 0.0
+        );
 
-        dto.setOwner(ownerDTO);
+        dto.setRentPrice(shop.getRentPrice());
 
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(shop.getCategory().getId());
-        categoryDTO.setName(shop.getCategory().getName());
-        categoryDTO.setLogo(shop.getCategory().getLogo());
+        // Total Reviews
+        dto.setTotalReviews(
+                shop.getReviews() != null
+                        ? shop.getReviews().size()
+                        : 0
+        );
 
-        dto.setCategory(categoryDTO);
+        dto.setArea(shop.getArea());
+
+
+        // ================= OWNER =================
+
+        if (shop.getOwner() != null) {
+
+            OwnerDTO ownerDTO = new OwnerDTO();
+
+            ownerDTO.setId(shop.getOwner().getId());
+            ownerDTO.setFirstName(shop.getOwner().getFirstName());
+            ownerDTO.setLastName(shop.getOwner().getLastName());
+            ownerDTO.setEmail(shop.getOwner().getEmail());
+
+            dto.setOwner(ownerDTO);
+        }
+
+
+        // ================= CATEGORY =================
+
+        if (shop.getCategory() != null) {
+
+            CategoryDTO categoryDTO = new CategoryDTO();
+
+            categoryDTO.setId(shop.getCategory().getId());
+            categoryDTO.setName(shop.getCategory().getName());
+            categoryDTO.setLogo(shop.getCategory().getLogo());
+
+            dto.setCategory(categoryDTO);
+        }
+
+
+        // ================= REVIEWS =================
 
         if (shop.getReviews() != null && !shop.getReviews().isEmpty()) {
 
-            List<ReviewDTO> reviewsList = shop.getReviews().stream()
+            List<ReviewMinDTO> reviewsList = shop.getReviews()
+                    .stream()
                     .map(review -> {
-                        ReviewDTO reviewDTO = new ReviewDTO();
+
+                        ReviewMinDTO reviewDTO = new ReviewMinDTO();
+
                         reviewDTO.setId(review.getId());
                         reviewDTO.setRating(review.getRating());
                         reviewDTO.setComment(review.getComment());
+
+//                        reviewDTO.setShop(shop);
+
                         return reviewDTO;
                     })
                     .toList();
@@ -82,21 +125,41 @@ public class ShopService {
             dto.setReviews(reviewsList);
         }
 
-        dto.setContract(mapToContractDto(shop.getContracts()));
-        if ((shop.getProducts() != null && !shop.getProducts().isEmpty())) {
-            List<ProductMinDTO> productMinDTOs;
-            productMinDTOs = shop.getProducts().stream().map(product -> {
-                ProductMinDTO  productMinDTO = new ProductMinDTO();
-                productMinDTO.setId(product.getId());
-                productMinDTO.setName(product.getName());
-                productMinDTO.setDescription(product.getDescription());
-                productMinDTO.setPrice(product.getPrice());
-                productMinDTO.setQuantity(product.getQuantity());
 
-                return productMinDTO;
-            }).toList();
+        // ================= CONTRACT =================
+
+        dto.setContract(
+                mapToContractDto(shop.getContracts())
+        );
+
+
+        // ================= PRODUCTS =================
+
+        if (shop.getProducts() != null && !shop.getProducts().isEmpty()) {
+
+            List<ProductMinDTO> productMinDTOs =
+                    shop.getProducts()
+                            .stream()
+                            .map(product -> {
+
+                                ProductMinDTO productMinDTO =
+                                        new ProductMinDTO();
+
+                                productMinDTO.setId(product.getId());
+                                productMinDTO.setName(product.getName());
+                                productMinDTO.setDescription(
+                                        product.getDescription()
+                                );
+                                productMinDTO.setPrice(product.getPrice());
+                                productMinDTO.setQuantity(
+                                        product.getQuantity()
+                                );
+
+                                return productMinDTO;
+                            })
+                            .toList();
+
             dto.setProducts(productMinDTOs);
-
         }
 
         return dto;
@@ -130,9 +193,10 @@ public class ShopService {
         dto.setShopName(savedShop.getShopName());
         dto.setDescription(savedShop.getDescription());
         dto.setImages(savedShop.getImages());
-       // dto.setTotalReviews(reviewsCount);
+        dto.setTotalReviews(savedShop.getReviews().size());
         dto.setArea(shop.getArea());
         dto.setRentPrice(shop.getRentPrice());
+        dto.setAverageRating(shop.getAverageRating());
 
         OwnerDTO ownerDTO = new OwnerDTO();
         ownerDTO.setId(savedShop.getOwner().getId());
