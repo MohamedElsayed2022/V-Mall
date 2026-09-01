@@ -18,12 +18,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ShopRepository shopRepository;
     public List<ReviewDTO> getAllReviews(Long shopId) {
-        Shop shop = shopRepository.findById(shopId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Shop not found with id: " + shopId
-                        )
-                );
 
         List<Review> reviews =  reviewRepository.findByShopId(shopId);
         return reviews.stream().map(review -> {
