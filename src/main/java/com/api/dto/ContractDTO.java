@@ -1,6 +1,5 @@
 package com.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import enums.ContractStatus;
 import enums.ContractType;
 import lombok.Getter;
@@ -19,8 +18,6 @@ public class ContractDTO {
     private LocalDate endDate;
     private ContractType contractType;
     private BigDecimal amount;
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ShopRevDTO shop;
-
 
 }

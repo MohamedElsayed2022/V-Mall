@@ -2,6 +2,7 @@ package com.api.service;
 
 import com.api.dto.CategoryDTO;
 import com.api.dto.ProductDTO;
+import com.api.dto.ShopRevDTO;
 import com.api.model.Category;
 import com.api.model.Product;
 import com.api.model.Shop;
@@ -38,19 +39,23 @@ public class ProductService {
             dto.setSku(product.getSku());
             dto.setActive(product.getActive());
             dto.setImages(product.getImages());
-  /// /////////////////////////////////////////////////////////////
             if (product.getCategory() != null) {
                 CategoryDTO categoryDTO = new CategoryDTO();
                 categoryDTO.setId(product.getCategory().getId());
                 categoryDTO.setName(product.getCategory().getName());
                 categoryDTO.setLogo(product.getCategory().getLogo());
-
                 dto.setCategory(categoryDTO);
+            }
+            if (product.getShop() != null) {
+                ShopRevDTO shopRevDTO = new ShopRevDTO();
+                shopRevDTO.setId(product.getShop().getId());
+                shopRevDTO.setShopName(product.getShop().getShopName());
+                dto.setShop(shopRevDTO);
             }
             return dto;
         }).toList();
     }
-//
+
     public ProductDTO createProduct(Long shopId , Long categoryId , Product product  , List<MultipartFile> imageFiles){
         List<String> fileNames = new ArrayList<>();
         for (MultipartFile img : imageFiles) {
@@ -65,7 +70,7 @@ public class ProductService {
 
         }
         product.setImages(fileNames);
-        /// //////////////////////////////////////////
+
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new RuntimeException("Shop not found with id: " + shopId));
 
@@ -76,7 +81,6 @@ public class ProductService {
         product.setCategory(category);
         Product savedProduct = productRepository.save(product);
 
-        /// /////////////////////////////////////////////////
         ProductDTO dto = new ProductDTO();
         dto.setId(savedProduct.getId());
         dto.setName(savedProduct.getName());
@@ -92,8 +96,14 @@ public class ProductService {
             categoryDTO.setId(product.getCategory().getId());
             categoryDTO.setName(product.getCategory().getName());
             categoryDTO.setLogo(product.getCategory().getLogo());
-
             dto.setCategory(categoryDTO);
+        }
+        if(product.getShop() != null) {
+            ShopRevDTO shopMinDTO = new ShopRevDTO();
+            shopMinDTO.setId(product.getShop().getId());
+            shopMinDTO.setShopName(product.getShop().getShopName());
+            dto.setShop(shopMinDTO);
+
         }
 
         return dto;
