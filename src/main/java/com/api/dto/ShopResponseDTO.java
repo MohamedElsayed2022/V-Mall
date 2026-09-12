@@ -1,8 +1,6 @@
 package com.api.dto;
 
 import com.api.base.AuditableEntity;
-import com.api.model.Contract;
-import com.api.model.Review;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,6 +24,5 @@ public class ShopResponseDTO extends AuditableEntity {
     private Integer totalReviews;
     private List<ProductMinDTO> products;
 
-    //   private Contract contract;
 
 }

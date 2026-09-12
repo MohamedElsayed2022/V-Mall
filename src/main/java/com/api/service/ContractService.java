@@ -9,6 +9,7 @@ import com.api.repository.ShopRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,12 @@ public class ContractService {
     public ContractDTO createContract(Contract contract  , Long shopId) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new RuntimeException("Shop not found with id: " + shopId));
+
+        boolean hasActiveContract = contractRepository.existsByShopIdAndEndDateAfter(shopId, LocalDate.now());
+        if (hasActiveContract) {
+            throw new IllegalStateException("Shop already has an active contract.");
+        }
+
         contract.setShop(shop);
         Contract savedContract = contractRepository.save(contract);
         ContractDTO dto = new ContractDTO();

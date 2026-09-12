@@ -87,7 +87,6 @@ public class ShopService {
             dto.setOwner(ownerDTO);
         }
 
-
         // ================= CATEGORY =================
 
         if (shop.getCategory() != null) {
@@ -181,7 +180,6 @@ public class ShopService {
                 throw new RuntimeException(e);
             }
             fileNames.add(fileName);
-
         }
         shop.setImages(fileNames);
 
@@ -191,26 +189,39 @@ public class ShopService {
         dto.setShopName(savedShop.getShopName());
         dto.setDescription(savedShop.getDescription());
         dto.setImages(savedShop.getImages());
-        dto.setTotalReviews(savedShop.getReviews().size());
         dto.setArea(shop.getArea());
         dto.setRentPrice(shop.getRentPrice());
-        dto.setAverageRating(shop.getAverageRating());
+        dto.setCreatedDate(shop.getCreatedDate());
+        dto.setLastModifiedDate(shop.getLastModifiedDate());
+        Double averageRating =
+                reviewRepository.getAverageRatingByShopId(shop.getId());
 
-        OwnerDTO ownerDTO = new OwnerDTO();
-        ownerDTO.setId(savedShop.getOwner().getId());
-        ownerDTO.setFirstName(savedShop.getOwner().getFirstName());
-        ownerDTO.setLastName(savedShop.getOwner().getLastName());
-        ownerDTO.setEmail(savedShop.getOwner().getEmail());
-        dto.setOwner(ownerDTO);
+        dto.setAverageRating(
+                averageRating != null ? averageRating : 0.0
+        );
 
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setId(savedShop.getCategory().getId());
-        categoryDTO.setName(savedShop.getCategory().getName());
-        categoryDTO.setLogo(savedShop.getCategory().getLogo());
-        dto.setCategory(categoryDTO);
+        if(savedShop.getReviews() != null && !savedShop.getReviews().isEmpty()) {
+            dto.setTotalReviews(savedShop.getReviews().size());
+        }else{
+            dto.setTotalReviews(0);
+        }
 
+        if(savedShop.getOwner() != null) {
+            OwnerDTO ownerDTO = new OwnerDTO();
+            ownerDTO.setId(savedShop.getOwner().getId());
+            ownerDTO.setFirstName(savedShop.getOwner().getFirstName());
+            ownerDTO.setLastName(savedShop.getOwner().getLastName());
+            ownerDTO.setEmail(savedShop.getOwner().getEmail());
+            dto.setOwner(ownerDTO);
+        }
+        if(savedShop.getCategory() != null) {
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(savedShop.getCategory().getId());
+            categoryDTO.setLogo(savedShop.getCategory().getLogo());
+            categoryDTO.setName(savedShop.getCategory().getName());
+            dto.setCategory(categoryDTO);
+        }
         return dto;
-
     }
 
     public Shop updateShop( Long id ,  Shop newShop , List<MultipartFile> imageFiles) {
@@ -218,6 +229,8 @@ public class ShopService {
         oldShop.setDescription(newShop.getDescription());
         oldShop.setImages(newShop.getImages());
         oldShop.setShopName(newShop.getShopName());
+        oldShop.setAverageRating(newShop.getAverageRating());
+        oldShop.setTotalReviews(newShop.getTotalReviews());
         if(imageFiles != null && !imageFiles.isEmpty())  {
             List<String> fileNames = new ArrayList<>();
             for (MultipartFile img : imageFiles) {
@@ -236,10 +249,7 @@ public class ShopService {
         return shopRepository.save(oldShop);
 
     }
-
     public String deleteShop(Long id){
         shopRepository.deleteById(id);
         return "Shop Deleted Successfully with id: " + id;
-    }
-
-    }
+    }}

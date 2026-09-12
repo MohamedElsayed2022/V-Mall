@@ -34,6 +34,9 @@ public class User extends PublicData {
     )
     private List<Role>  roles = new ArrayList<>();
 
+//    @OneToOne( mappedBy = "user" ,  cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+//    private Cart cart;
+
 
 
 }

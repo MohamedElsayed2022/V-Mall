@@ -15,9 +15,8 @@ public class ContractController {
     private final ContractService contractService;
 
     @PostMapping("contract")
-    public ContractDTO createContract(@RequestBody Contract contract , @RequestParam Long shopId) {
-
-        return contractService.createContract(contract , shopId);
+    public ContractDTO createContract(@RequestBody Contract contract, @RequestParam Long shopId) {
+        return contractService.createContract(contract, shopId);
     }
     @GetMapping("contracts")
     public List<ContractDTO> getALlContracts() {
