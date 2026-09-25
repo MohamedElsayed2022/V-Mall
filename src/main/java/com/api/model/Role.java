@@ -1,6 +1,7 @@
 package com.api.model;
 
 import com.api.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -20,8 +21,9 @@ import java.util.List;
 @Entity
 @Table(name = "roles")
 public class Role extends BaseEntity {
-    @Column(name = "roles")
+    @Column(name = "role_name")
     private String roleName;
     @ManyToMany(mappedBy = "roles" )
+    @JsonIgnore
     private List<User> users = new ArrayList<>();
 }
