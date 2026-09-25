@@ -1,14 +1,16 @@
 package com.api.model;
 
-import com.api.base.PublicData;
+import com.api.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,8 +22,14 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class User extends PublicData implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
+
+    @Column(name = "firstname")
+    private String firstName;
+    @Column(name = "lastName")
+    private String lastName;
+    @Column(name = "fullName")
+    private String fullName;
     @Column(name = "email")
     private String email;
     @JsonIgnore
@@ -29,6 +37,13 @@ public class User extends PublicData implements UserDetails {
     private String password;
     @Column(name = "active")
     private int active;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime lastModifiedDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role" ,
@@ -80,8 +95,14 @@ public class User extends PublicData implements UserDetails {
         return active == 1;
     }
 
-//    @OneToOne( mappedBy = "user" ,  cascade = CascadeType.ALL , fetch = FetchType.EAGER)
-//    private Cart cart;
+    public String getFullName(){
+        return getFirstName() + " " + getLastName();
+    }
+
+    @OneToMany(mappedBy = "user" ,  cascade = CascadeType.ALL)
+    private List<Token> token = new ArrayList<>();
+
+
 
 
 
