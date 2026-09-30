@@ -3,8 +3,10 @@ package com.api.config.auth;
 import com.api.config.auth.email.EmailService;
 import com.api.config.auth.email.EmailTemplateName;
 import com.api.config.security.JwtService;
+import com.api.model.RefreshToken;
 import com.api.model.Token;
 import com.api.model.User;
+import com.api.repository.RefreshTokenRepository;
 import com.api.repository.RoleRepository;
 import com.api.repository.TokenRepository;
 import com.api.repository.UserRepository;
@@ -20,7 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +37,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RoleRepository roleRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
@@ -65,11 +71,14 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        UserDetails user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         String jwtToken = jwtService.generateToken(user);
+        String refreshToken = generateRefreshToken(user);
         return  AuthenticationResponse.builder()
-                .token(jwtToken).build();
+                .token(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
     }
     @Transactional
     public void activateAccount(String token) {
@@ -119,5 +128,25 @@ public class AuthenticationService {
         }
 
         return codeBuilder.toString();
+    }
+
+    private String generateRefreshToken(User user) {
+        SecureRandom random = new SecureRandom();
+        byte[] randomBytes = new byte[32];
+        random.nextBytes(randomBytes);
+
+        String refreshToken = Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(randomBytes);
+
+        RefreshToken token = RefreshToken.builder()
+                .token(refreshToken)
+                .expiredAt(LocalDateTime.now().plusDays(7))
+                .user(user)
+                .build();
+
+        refreshTokenRepository.save(token);
+        return refreshToken;
+
     }
 }
