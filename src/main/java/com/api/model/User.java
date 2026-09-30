@@ -102,6 +102,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user" ,  cascade = CascadeType.ALL)
     private List<Token> token = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
+    private List<RefreshToken> refreshToken = new ArrayList<>();
+
 
 
 

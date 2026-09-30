@@ -30,9 +30,24 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/**").permitAll()
-//                        .requestMatchers("/api/v1/admin/**").permitAll()
-//                        .anyRequest().authenticated())
+                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+//                        .requestMatchers("/auth/**", "/oauth2/**").permitAll()
+                        .requestMatchers( "/api/v1/categories").permitAll()
+                                .requestMatchers( "/api/v1/shop").hasAnyRole( "ADMIN")
+//                        .requestMatchers(
+//                                "/api/allProducts",
+//                                "/api/category",
+//                                "/api/productKey",
+//                                "/api/product",
+//                                "/api/product/**",
+//                                "/api/category/**",
+//                                "/api/categories",
+//                                "/api/productSizeByCatId",
+//                                "/api/productSizeByKey",
+//                                "/api/productSize"
+//                        ).permitAll()
+//                        .requestMatchers("/api/buy/purchase").hasAnyRole("USER", "ADMIN")
+                        .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter , UsernamePasswordAuthenticationFilter.class);
