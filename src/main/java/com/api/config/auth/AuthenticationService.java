@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +63,7 @@ public class AuthenticationService {
 
     }
 
-    public AuthenticationResponse login(LoginRequest request) throws MessagingException {
+    public AuthenticationResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -148,5 +147,25 @@ public class AuthenticationService {
         refreshTokenRepository.save(token);
         return refreshToken;
 
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest request){
+        RefreshToken token = refreshTokenRepository.findByToken(request.refreshToken()).orElseThrow(
+                () -> new RuntimeException("Invalid token"));
+
+
+        if (token.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Refresh token expired");
+        }
+
+        User user = token.getUser();
+
+        String jwtToken = jwtService.generateToken(user);
+
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .refreshToken(token.getToken())
+                .build();
     }
 }

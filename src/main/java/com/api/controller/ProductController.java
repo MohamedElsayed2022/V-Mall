@@ -18,11 +18,11 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @RequestMapping("{shopId}/products")
+    @RequestMapping("products/{shopId}")
     public List<ProductDTO> getProductsByShopId(@PathVariable Long shopId){
         return productService.getProductsByShopId(shopId);
     }
-    @PostMapping(value = "{shopId}/product" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "product/{shopId}" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductDTO> createProduct( @PathVariable Long shopId , @RequestParam("categoryId") Long categoryId, @ModelAttribute Product product ,
                                   @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles)
     {

@@ -25,6 +25,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthenticationResponse> refreshToken(
+            @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
+    }
+
     @GetMapping("/activate-account")
     public ResponseEntity<String> activateAccount(@RequestParam String token){
         authenticationService.activateAccount(token);

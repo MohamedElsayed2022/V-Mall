@@ -7,6 +7,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -16,6 +18,7 @@ import lombok.*;
 @Table(name = "token")
 public class Token extends BaseEntity {
     public String token;
+    private LocalDateTime expiresAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id" , nullable = false)

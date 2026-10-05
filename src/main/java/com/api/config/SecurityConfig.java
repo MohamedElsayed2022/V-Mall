@@ -4,6 +4,7 @@ import com.api.config.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -30,23 +31,24 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/auth/register", "/auth/login" , "/auth/refresh-token").permitAll()
 //                        .requestMatchers("/auth/**", "/oauth2/**").permitAll()
-                        .requestMatchers( "/api/v1/categories").permitAll()
-                                .requestMatchers( "/api/v1/shop").hasAnyRole( "ADMIN")
-//                        .requestMatchers(
-//                                "/api/allProducts",
-//                                "/api/category",
-//                                "/api/productKey",
-//                                "/api/product",
-//                                "/api/product/**",
-//                                "/api/category/**",
-//                                "/api/categories",
-//                                "/api/productSizeByCatId",
-//                                "/api/productSizeByKey",
-//                                "/api/productSize"
-//                        ).permitAll()
-//                        .requestMatchers("/api/buy/purchase").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers( HttpMethod.GET ,"/api/v1/categories").permitAll()
+                                .requestMatchers(HttpMethod.POST,  "/api/v1/categories").hasAnyRole("ADMIN" , "OWNER")
+                                .requestMatchers(HttpMethod.DELETE,  "/api/v1/categories").hasAnyRole("ADMIN" , "OWNER")
+                                .requestMatchers( HttpMethod.GET , "/api/v1/shop").permitAll()
+                                .requestMatchers(HttpMethod.POST,  "/api/v1/shop").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,  "/api/v1/shop").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST,  "/api/v1/shop").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/v1/product/**")
+                                .hasAnyRole("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
+                                .hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/v1/contract",
+                                "/api/reviews",
+                                "/api/product/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
