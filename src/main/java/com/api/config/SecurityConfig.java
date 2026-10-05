@@ -31,8 +31,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/auth/register", "/auth/login" , "/auth/refresh-token").permitAll()
-//                        .requestMatchers("/auth/**", "/oauth2/**").permitAll()
+//                        .requestMatchers("/auth/register", "/auth/login" , "/auth/refresh-token").permitAll()
+                        .requestMatchers("/auth/**", "/oauth2/**").permitAll()
                         .requestMatchers( HttpMethod.GET ,"/api/v1/categories").permitAll()
                                 .requestMatchers(HttpMethod.POST,  "/api/v1/categories").hasAnyRole("ADMIN" , "OWNER")
                                 .requestMatchers(HttpMethod.DELETE,  "/api/v1/categories").hasAnyRole("ADMIN" , "OWNER")
@@ -42,12 +42,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,  "/api/v1/shop").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/v1/product/**")
                                 .hasAnyRole("OWNER", "ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/api/v1/products/**")
-                                .hasRole("ADMIN")
+
                         .requestMatchers(
                                 "/api/v1/contract",
-                                "/api/reviews",
-                                "/api/product/**"
+                                "api/v1/review",
+                                "api/v1/reviews"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -56,7 +55,6 @@ public class SecurityConfig {
 
 
         return http.build();
-
 
     }
 

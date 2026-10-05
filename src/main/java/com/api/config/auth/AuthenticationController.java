@@ -21,7 +21,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid LoginRequest request) throws MessagingException {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid LoginRequest request)  {
         return ResponseEntity.ok(authenticationService.login(request));
     }
 
