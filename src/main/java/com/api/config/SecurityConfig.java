@@ -24,14 +24,12 @@ public class SecurityConfig {
     private final JwtFilter  jwtFilter;
     private final AuthenticationProvider  authenticationProvider;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-//                        .requestMatchers("/auth/register", "/auth/login" , "/auth/refresh-token").permitAll()
                         .requestMatchers("/auth/**", "/oauth2/**").permitAll()
                         .requestMatchers( HttpMethod.GET ,"/api/v1/categories").permitAll()
                                 .requestMatchers(HttpMethod.POST,  "/api/v1/categories").hasAnyRole("ADMIN" , "OWNER")
